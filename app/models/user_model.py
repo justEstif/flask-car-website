@@ -1,22 +1,21 @@
-from ..db import db
+from db import db
+from flask_login import UserMixin
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    age = db.Column(db.String(120))
-    address = db.Column(db.String(120))
+    name = db.Column(db.String(150))
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150))
 
     @property
     def serialize(self):
         return {
             'id': self.id,
             'name': self.name,
-            'city': self.city,
-            'state': self.state,
-            'address': self.address
+            'email': self.email,
         }
 
     @staticmethod
