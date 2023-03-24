@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} {%block content%}
+<section id="sign_up">
+  <h3 >Sign Up</h3>
+  <form method="POST">
+    <div class="grid">
+      <input
+        type="email"
+        name="email"
+        placeholder="Email address"
+        aria-label="Email address"
+        required
+      />
+
+      <input
+        name="firstName"
+        placeholder="First Name"
+        aria-label="First Name"
+        required
+      />
+
+      <input
+        type="password"
+        name="password1"
+        placeholder="Password"
+        aria-label="Password"
+        required
+      />
+
+      <input
+        type="password"
+        name="password2"
+        placeholder="Confirm Password"
+        aria-label="Confirm Password"
+        required
+      />
+
+      <button type="submit">Sign Up</button>
+    </div>
+  </form>
+</div>
+{%endblock%}

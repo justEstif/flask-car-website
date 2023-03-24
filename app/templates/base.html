@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='global.css') }}"
+    />
+    <title>{% block title %}Home{% endblock %}</title>
+  </head>
+  <body>
+    <header class="container">
+      <nav>
+        {% if user and user.is_authenticated %}
+        <ul>
+          <li>{{ user.firstName }}</li>
+        </ul>
+        {%endif%}
+        <ul>
+          {% if user and user.is_authenticated %}
+          <li><a id="home" href="/">Home</a></li>
+          <li><a id="logout" href="/logout">Logout</a></li>
+          {% else %}
+          <li><a id="login" href="/login">Login</a></li>
+          <li><a id="signUp" href="/sign-up">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+    {% with messages=get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category ==
+    'error' or category != "success"%}
+    <div class="container">
+      <div class="alert">
+        <button
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+        >
+          <span>&times;</span>
+        </button>
+        {{message}}
+      </div>
+    </div>
+
+    {% else %}
+    <div class="container">
+      <div class="success">
+        <span
+          class="closebtn"
+          onclick="this.parentElement.style.display='none';"
+          >&times;</span
+        >
+        {{message}}
+      </div>
+    </div>
+
+    {% endif %} {% endfor %} {% else %} {% endif %} {% endwith %}
+
+    <main class="container">{% block content %} {% endblock %}</main>
+    {% block javascript %}
+    <script type="text/javascript">
+      function deleteNote(noteId) {
+        fetch("/delete-note", {
+          method: "POST",
+          body: JSON.stringify({ noteId: noteId }),
+        }).then((_res) => {
+          window.location.href = "/";
+        });
+      }
+    </script>
+    {% endblock %}
+  </body>
+</html>

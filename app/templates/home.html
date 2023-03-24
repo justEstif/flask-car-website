@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {%block content%}
+<section id="home">
+  <hgroup>
+    <h2>Notes</h2>
+    <h3>Home</h3>
+  </hgroup>
+  <article>
+    <form method="POST">
+      <div class="grid">
+        <label for="note">
+          Create a new note
+          <input type="text" id="note" name="note" placeholder="Note" />
+        </label>
+      </div>
+      <button type="submit">Submit</button>
+    </form>
+  </article>
+  {% if not user.notes %}
+  <article>User has no notes. Create some!</article>
+
+  {% else %} {% for note in user.notes %}
+  <article>
+    <nav>
+      <ul>
+        <li>{{ note.data }}</li>
+      </ul>
+      <ul>
+        <li>{{ note.date }}</li>
+        <li>
+          <button
+            onClick="deleteNote({{ note.id }})"
+            type="submit"
+            class="secondary outline"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </article>
+  {% endfor %} {% endif %}
+</section>
+{%endblock%}
