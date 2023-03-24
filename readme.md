@@ -1,9 +1,10 @@
-# Flask MVC Template
+# Used Cars
 
-## Packages
+A website for finding used cars using #TODO
 
-- flask
-- sqlalchemy
-- python-dotenv
+Display used cars for sale within 100miles of user's location (or in the US).
+Create an account, and save the cars you are interested in
+Search for a car by brand, distance, year, millage, and price.
+Create site-only used car sale posts
 
 **check [requirements](./requirements.txt) for complete list**
