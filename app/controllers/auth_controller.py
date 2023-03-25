@@ -3,30 +3,19 @@ from models.user_model import User
 from db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
-
+from flask_wtf import FlaskForm
+from wtforms import (StringField,  PasswordField, )
+from wtforms.validators import Email, DataRequired, EqualTo, Length, ValidationError
 
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-
-        user = User.query.filter_by(email=email).first()
-        if user:
-            if check_password_hash(user.password, password):
-                flash("User logged in", category="success")
-                login_user(user, remember=True)
-                return redirect(url_for("views.home"))  # redirect to home
-            else:
-                flash("Wrong password, try again", category="error")
-
-        else:
-            flash("User doesn't exist", category="error")
-
-    return render_template("login.html", user=current_user)
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect(url_for("views.home"))  # redirect to home
+    return render_template("sign_up.jinja2", user=current_user, form=form)
 
 
 @auth_bp.route("/logout")
@@ -38,33 +27,51 @@ def logout():
 
 @auth_bp.route("/sign-up", methods=["GET", "POST"])
 def sign_up():
-    if request.method == "POST":
-        email = request.form.get("email")
-        name = request.form.get("name")
-        password1 = request.form.get("password1")
-        password2 = request.form.get("password2")
-        user = User.query.filter_by(email=email).first()
+    form = SignUpForm()
+    if form.validate_on_submit():
+        return redirect(url_for("views.home"))  # redirect to home
+    return render_template("sign_up.jinja2", user=current_user, form=form)
 
-        if user:
-            flash("User with email already exists", category="error")
-        elif len(email) < 4:
-            flash("Email must be greater than 4 characters", category="error")
-        elif len(name) < 2:
-            flash("First Name must be greater than 2 characters", category="error")
-        elif password1 != password2:
-            flash("Passwords don't match", category="error")
-        elif len(password1) < 7:
-            flash("Password must be greater than 7 characters", category="error")
+
+class SignUpForm(FlaskForm):
+    username = StringField('Username', validators=[
+                           DataRequired(), Length(min=3, max=32)])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email(), Length(min=6, max=40)])
+    password = PasswordField('Password',
+                             validators=[DataRequired(), Length(min=8, max=64)])
+    confirm_password = PasswordField('Verify password',
+                                     validators=[DataRequired(), EqualTo('password',
+                                                                         message='Passwords must match')])
+
+    def validate(self):
+        if User.query.filter_by(username=self.username.data).first():
+            raise ValidationError("Username already in use.")
+        elif User.query.filter_by(email=self.email.data).first():
+            raise ValidationError("Email already in use.")
         else:
-            # create user with hashed password
             new_user = User(
-                email=email,
-                name=name,
-                password=generate_password_hash(password1, method="sha256"),
+                email=self.email.data,
+                name=self.username.data,
+                password=generate_password_hash(
+                    self.password.data, method="sha256"),
             )
             db.session.add(new_user)  # add created user to db
             db.session.commit()  # commit the current transaction
-            flash("Account created", category="success")
+            login_user(new_user, remember=True)  # login user
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email',
+                        validators=[DataRequired(), Email(), Length(min=6, max=40)])
+    password = PasswordField('Password',
+                             validators=[DataRequired(), Length(min=8, max=64)])
+
+    def validate(self):
+        user = User.query.filter_by(email=self.email.data).first()
+        if not user:
+            raise ValidationError("Incorrect email")
+        elif not check_password_hash(user.password, self.password.data):
+            raise ValidationError("Incorrect password")
+        else:
             login_user(user, remember=True)
-            return redirect(url_for("views.home"))  # redirect to home
-    return render_template("sign_up.html", user=current_user)
