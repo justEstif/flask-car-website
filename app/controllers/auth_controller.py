@@ -15,14 +15,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         return redirect(url_for("views.home"))  # redirect to home
-    return render_template("sign_up.jinja2", user=current_user, form=form)
-
-
-@auth_bp.route("/logout")
-@login_required  # can't access page unless logged in
-def logout():
-    logout_user()
-    return redirect(url_for("auth.login"))
+    return render_template("login.jinja2", user=current_user, form=form)
 
 
 @auth_bp.route("/sign-up", methods=["GET", "POST"])
@@ -33,9 +26,39 @@ def sign_up():
     return render_template("sign_up.jinja2", user=current_user, form=form)
 
 
+@auth_bp.route("/logout")
+@login_required  # can't access page unless logged in
+def logout():
+    logout_user()
+    return redirect(url_for("auth.login"))
+
+
+class LoginForm(FlaskForm):
+    email = StringField('Email',
+                        validators=[DataRequired(), Email(),
+                                    Length(min=6, max=40)])
+    password = PasswordField('Password',
+                             validators=[
+                                 DataRequired(), Length(min=8, max=64)]
+                             )
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if not user:
+            raise ValidationError("Incorrect email.")
+
+    def validate_password(self, password):
+        user = User.query.filter_by(email=self.email.data).first()
+        if user:
+            if not check_password_hash(user.password, password.data):
+                raise ValidationError("Incorrect password.")
+            else:
+                login_user(user, remember=True)
+
+
 class SignUpForm(FlaskForm):
     username = StringField('Username', validators=[
-                           DataRequired(), Length(min=3, max=32)])
+                           DataRequired(), Length(min=3, max=32)], )
     email = StringField('Email',
                         validators=[DataRequired(), Email(), Length(min=6, max=40)])
     password = PasswordField('Password',
@@ -44,34 +67,23 @@ class SignUpForm(FlaskForm):
                                      validators=[DataRequired(), EqualTo('password',
                                                                          message='Passwords must match')])
 
-    def validate(self):
-        if User.query.filter_by(username=self.username.data).first():
-            raise ValidationError("Username already in use.")
-        elif User.query.filter_by(email=self.email.data).first():
-            raise ValidationError("Email already in use.")
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError("Email is registered.")
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError("Username is registered.")
+
         else:
             new_user = User(
                 email=self.email.data,
-                name=self.username.data,
+                username=self.username.data,
                 password=generate_password_hash(
                     self.password.data, method="sha256"),
             )
             db.session.add(new_user)  # add created user to db
             db.session.commit()  # commit the current transaction
             login_user(new_user, remember=True)  # login user
-
-
-class LoginForm(FlaskForm):
-    email = StringField('Email',
-                        validators=[DataRequired(), Email(), Length(min=6, max=40)])
-    password = PasswordField('Password',
-                             validators=[DataRequired(), Length(min=8, max=64)])
-
-    def validate(self):
-        user = User.query.filter_by(email=self.email.data).first()
-        if not user:
-            raise ValidationError("Incorrect email")
-        elif not check_password_hash(user.password, self.password.data):
-            raise ValidationError("Incorrect password")
-        else:
-            login_user(user, remember=True)
