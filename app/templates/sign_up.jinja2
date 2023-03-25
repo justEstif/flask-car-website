@@ -1,41 +1,51 @@
 {% extends "base.jinja2" %} {% block title %}Login{% endblock %} {%block content%}
 <section id="sign_up">
-  <h3 >Sign Up</h3>
+  <h3>Sign Up</h3>
   <form method="POST">
-    <div class="grid">
-      <input
-        type="email"
-        name="email"
-        placeholder="Email address"
-        aria-label="Email address"
-        required
-      />
+    {{ form.csrf_token }}
+    <fieldset>
+      {{ form.username.label }} {{ form.username }}
+      {% if form.username.errors %}
+          {% for error in form.username.errors %}
+            <p onclick="this.style.display='none';">
+              {{error}}
+            </p>
+          {% endfor %}
+      {% endif %}
+    </fieldset>
+    <fieldset>
+      {{ form.email.label }} {{ form.email }}
+      {% if form.email.errors %}
+        {% for error in form.email.errors %}
+          <p onclick="this.style.display='none';">
+            {{error}}
+          </p>
+        {% endfor %}
+      {% endif %}
+    </fieldset>
+    <fieldset>
+      {{ form.password.label }} {{ form.password }}
+      {% if form.password.errors %}
+        {% for error in form.password.errors %}
+          <p onclick="this.style.display='none';">
+            {{error}}
+          </p>
+        {% endfor %}
+      {% endif %}
+    </fieldset>
+    <fieldset>
+      {{ form.confirm_password.label }} {{ form.confirm_password }}
+      {% if form.confirm_password.errors %}
+        {% for error in form.confirm_password.errors %}
+          <p onclick="this.style.display='none';">
+            {{error}}
+          </p>
+        {% endfor %}
+      {% endif %}
+    </fieldset>
 
-      <input
-        name="firstName"
-        placeholder="First Name"
-        aria-label="First Name"
-        required
-      />
 
-      <input
-        type="password"
-        name="password1"
-        placeholder="Password"
-        aria-label="Password"
-        required
-      />
-
-      <input
-        type="password"
-        name="password2"
-        placeholder="Confirm Password"
-        aria-label="Confirm Password"
-        required
-      />
-
-      <button type="submit">Sign Up</button>
-    </div>
+    <button type="submit">Sign Up</button>
   </form>
-</div>
-{%endblock%}
+  </div>
+  {%endblock%}
