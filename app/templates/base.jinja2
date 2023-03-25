@@ -24,10 +24,10 @@
         <ul>
           {% if user and user.is_authenticated %}
           <li><a id="home" href="/">Home</a></li>
-          <li><a id="logout" href="/logout">Logout</a></li>
+          <li><a id="logout" href="/auth/logout">Logout</a></li>
           {% else %}
-          <li><a id="login" href="/login">Login</a></li>
-          <li><a id="signUp" href="/sign-up">Sign Up</a></li>
+          <li><a id="login" href="/auth/login">Login</a></li>
+          <li><a id="signUp" href="/auth/sign-up">Sign Up</a></li>
           {% endif %}
         </ul>
       </nav>
@@ -76,3 +76,4 @@
     {% endblock %}
   </body>
 </html>
+
