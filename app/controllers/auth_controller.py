@@ -14,7 +14,7 @@ auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        return redirect(url_for("views.home"))  # redirect to home
+        return redirect(url_for("user_bp.home"))  # redirect to home
     return render_template("login.jinja2", user=current_user, form=form)
 
 
@@ -22,15 +22,15 @@ def login():
 def sign_up():
     form = SignUpForm()
     if form.validate_on_submit():
-        return redirect(url_for("views.home"))  # redirect to home
+        return redirect(url_for("user_bp.home"))  # redirect to home
     return render_template("sign_up.jinja2", user=current_user, form=form)
 
 
 @auth_bp.route("/logout")
-@login_required  # can't access page unless logged in
+@login_required
 def logout():
     logout_user()
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("auth_bp.login"))
 
 
 class LoginForm(FlaskForm):

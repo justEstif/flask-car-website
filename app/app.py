@@ -20,7 +20,7 @@ app.register_blueprint(auth_controller.auth_bp)
 
 # setup login manager
 login_manager = LoginManager()
-login_manager.login_view = "auth.login"  # type: ignore
+login_manager.login_view = "auth_bp.login"  # type: ignore
 login_manager.init_app(app)
 
 
