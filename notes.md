@@ -8,4 +8,4 @@
 
 ## TODO
 
-- [ ] html -> jinja2
+- [x] html -> jinja2
