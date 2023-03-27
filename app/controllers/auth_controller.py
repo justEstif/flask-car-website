@@ -50,7 +50,7 @@ class LoginForm(FlaskForm):
     def validate_password(self, password):
         user = User.query.filter_by(email=self.email.data).first()
         if user:
-            if not check_password_hash(user.password, password.data):
+            if not user.check_password(password):
                 raise ValidationError("Incorrect password.")
             else:
                 login_user(user, remember=True)
@@ -81,9 +81,8 @@ class SignUpForm(FlaskForm):
             new_user = User(
                 email=self.email.data,
                 username=self.username.data,
-                password=generate_password_hash(
-                    self.password.data, method="sha256"),
             )
+            new_user.set_password(self.password.data)
             db.session.add(new_user)  # add created user to db
             db.session.commit()  # commit the current transaction
             login_user(new_user, remember=True)  # login user
