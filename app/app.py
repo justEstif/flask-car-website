@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from flask_login import LoginManager
 
 from models.user_model import User
+from models.car_model import Car
+
 import db
 from controllers import user_controller, auth_controller
 

@@ -1,16 +1,15 @@
 from sqlalchemy import func
-from ..db import db
+from db import db
 
 
-class Note(db.Model):
-    __tablename__ = "cars"
+class Car(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.String(10000))
-    date = db.Column(db.DateTime(timezone=True), default=func.now())
-
-    # relation
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    user = db.relationship("User", backref=db.backref("notes", lazy=True))
-
-    def __repr__(self) -> str:
-        return f"Note('{self.user_id}', '{self.user}', '{self.data}', '{self.date}')"
+    make = db.Column(db.String(50))
+    model = db.Column(db.String(50))
+    year = db.Column(db.Integer)
+    price = db.Column(db.Float)
+    mileage = db.Column(db.Integer)
+    description = db.Column(db.Text)
+    image_url = db.Column(db.String(200))
+    posted_date = db.Column(db.DateTime(timezone=True), default=func.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
