@@ -2,7 +2,7 @@ from sqlalchemy import func
 from db import db
 
 
-class Car(db.Model):
+class CarController(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     make = db.Column(db.String(50))
     model = db.Column(db.String(50))
@@ -13,3 +13,4 @@ class Car(db.Model):
     image_url = db.Column(db.String(200))
     posted_date = db.Column(db.DateTime(timezone=True), default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # status: sold, or not
