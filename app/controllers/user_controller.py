@@ -8,3 +8,4 @@ user_bp = Blueprint("user_bp", __name__, url_prefix="/user")
 @login_required  # must be logged in to access
 def home():
     return render_template("home.jinja2", user=current_user)
+# save car
