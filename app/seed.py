@@ -1,21 +1,22 @@
 import json
-
-
 from db import db
-from models import User, Car
+from werkzeug.security import generate_password_hash
 
 
 def seed_users():
+    from models import User
     f = open("user.json")
 
     users = json.load(f)
 
     for user in users:
+
         new_user = User(
             username=user["username"],
             email=user['email'],
+            password_hash=generate_password_hash(
+                'testpassword', method="sha256"),
         )
-        new_user.set_password("testpassword")
         db.session.add(new_user)  # add created user to db
         db.session.commit()  # commit the current transaction
 
@@ -24,6 +25,7 @@ def seed_users():
 
 
 def seed_cars():
+    from models import Car
     f = open("car.json")
 
     cars = json.load(f)
