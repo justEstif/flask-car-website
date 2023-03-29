@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
 from models import User
 from db import db
-from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import (StringField,  PasswordField, )
@@ -50,7 +50,7 @@ class LoginForm(FlaskForm):
     def validate_password(self, password):
         user = User.query.filter_by(email=self.email.data).first()
         if user:
-            if not user.check_password(password):
+            if not check_password_hash(user.password_hash, password.data):
                 raise ValidationError("Incorrect password.")
             else:
                 login_user(user, remember=True)
@@ -81,8 +81,9 @@ class SignUpForm(FlaskForm):
             new_user = User(
                 email=self.email.data,
                 username=self.username.data,
+                password_hash=generate_password_hash(
+                    self.password.data, method="sha256"),
             )
-            new_user.set_password(self.password.data)
             db.session.add(new_user)  # add created user to db
             db.session.commit()  # commit the current transaction
             login_user(new_user, remember=True)  # login user
