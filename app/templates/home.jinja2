@@ -4,7 +4,88 @@
     <h2>Cars</h2>
     <h3>Home</h3>
   </hgroup>
+  <details>
+    <summary role="button">Create new car</summary>
+    <form method="POST">
+      {{ form.csrf_token }}
+      <fieldset>
+        {{ form.make.label }} {{ form.make }}
+        {% if form.make.errors %}
+        {% for error in form.make.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.model.label }} {{ form.model }}
+        {% if form.model.errors %}
+        {% for error in form.model.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.year.label }} {{ form.year }}
+        {% if form.year.errors %}
+        {% for error in form.year.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.price.label }} {{ form.price }}
+        {% if form.price.errors %}
+        {% for error in form.price.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.mileage.label }} {{ form.mileage }}
+        {% if form.mileage.errors %}
+        {% for error in form.mileage.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.description.label }} {{ form.description }}
+        {% if form.description.errors %}
+        {% for error in form.description.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+      <fieldset>
+        {{ form.image_url.label }} {{ form.image_url }}
+        {% if form.image_url.errors %}
+        {% for error in form.image_url.errors %}
+        <p onclick="this.style.display='none';">
+          {{error}}
+        </p>
+        {% endfor %}
+        {% endif %}
+      </fieldset>
+
+      <button type="submit">Post Car</button>
+      </div>
+    </form>
+
+  </details>
   {# add a new car posting here #}
+
   {% if not cars%}
   <article>No cars currently available. Please try again later.</article>
 
