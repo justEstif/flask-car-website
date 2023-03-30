@@ -1,0 +1,10 @@
+.img-container {
+  width: 20vw;
+  max-width: 25vw;
+}
+
+.img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}

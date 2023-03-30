@@ -8,10 +8,25 @@
   {% if not cars%}
   <article>No cars currently available. Please try again later.</article>
 
-  {% else %} {% for car in cars %}
-  <article>
-    {{car.name}}
+  {% else %}
+
+
+  {% for car in cars %}
+  <article class='grid'>
+    <details>
+      <summary>{{car.year}} {{car.model}} {{car.make}}</summary>
+      <p>Listed Price:{{car.price}}</p>
+      <p>Milage:{{car.mileage}} Miles</p>
+      <p>Posted Date:{{car.posted_date}}</p>
+      <p>{{car.description}}</p>
+    </details>
+    <div class="img-container">
+      <img class="img" src="{{car.image_url}}" />
+    </div>
+
   </article>
-  {% endfor %} {% endif %}
+  {% endfor %}
+
+  {% endif %}
 </section>
 {%endblock%}
